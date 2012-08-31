@@ -1,9 +1,9 @@
 TwitterClone::Application.routes.draw do
-  get "static_pagic/about"
+  get "static_pages/about"
 
-  get "static_pagic/help"
+  get "static_pages/help"
 
-  get "static_pagic/contact"
+  get "static_pages/contact"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -54,7 +54,7 @@ TwitterClone::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'welcome#about'
+  root :to => 'StaticPages#about'
 
   # See how all your routes lay out with "rake routes"
 
