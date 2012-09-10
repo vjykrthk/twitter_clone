@@ -37,7 +37,7 @@ describe "StaticPages" do
       click_link "Help"
       should have_selector('h1', text:'Help')
       click_link "Contact"
-      should have_selector('h1', text:'Contact Us')
+      should have_selector('h1', text:'Contact Us')      
       click_link "twitter clone"
       should have_selector('h1', text:'Twitter Clone')
       click_link "Sign up now!"

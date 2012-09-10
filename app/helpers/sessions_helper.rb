@@ -21,4 +21,17 @@ module SessionsHelper
 	def current_user
 		@current_user ||= User.find_by_rememberme_token(cookies[:Rememberme_token])
 	end
+
+	def current_user?(user)
+		user == current_user
+	end
+
+	def store_url_location
+		session[:redirect_to_url] = request.url
+	end
+
+	def redirect_back_to(default)
+		redirect_to session[:redirect_to_url] || default
+		session.delete(:redirect_to_url)
+	end
 end

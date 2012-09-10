@@ -15,6 +15,16 @@ describe User do
  		it { should respond_to(:rememberme_token)}
  		it { should respond_to(:password_confirmation) }
  		it { should respond_to(:authenticate) }
+ 		it { should respond_to(:admin) }
+ 	end
+
+ 	describe "With admin attributes set to true" do
+ 		before do
+ 			@user.save
+ 			@user.toggle!(:admin)
+ 		end
+ 		
+ 		it { should be_admin }
  	end
 
  	describe "Creation of new user should check for presence of name" do
