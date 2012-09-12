@@ -1,0 +1,5 @@
+<%= form_for(@micropost) do |f| %>
+	<%= render 'shared/errors', object:f.object %>
+	<%= f.text_area :content %>
+	<%= f.submit "Post" %>
+<% end %>

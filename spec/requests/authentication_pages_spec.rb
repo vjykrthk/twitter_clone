@@ -43,7 +43,6 @@ describe "AuthenticationPages" do
 				describe "Non signed user" do
 					describe "Should not be able access profile page without signing in" do
 						before { visit edit_user_path(user) }
-
 					end
 
 					describe "Should not be able update without sign in" do
@@ -51,12 +50,21 @@ describe "AuthenticationPages" do
 						specify { response.should redirect_to(signin_path)}
 					end
 
-
-
 					describe "Should not be able to access users index page" do
 						before { visit users_path }
 						it { should have_selector('h1', text:'Sign in')}				
 						it { should have_selector('div.alert.alert-notice', text:'Please signin') }
+					end
+
+					describe "in Micropost controller" do						
+						describe "Submitting to the create action" do
+							before { post microposts_path }
+							it { response.should redirect_to(signin_path)}
+						end
+						describe "Delete a micropost" do
+							before { delete micropost_path(FactoryGirl.create(:micropost)) }
+							it { response.should redirect_to(signin_path)}
+						end
 					end
 				end
 				describe "Signed user" do
@@ -65,7 +73,7 @@ describe "AuthenticationPages" do
 					before { signin_user(user) }				
 					describe "Correct user should be able to edit the profile" do
 						before { visit edit_user_path(wrong_user) }
-						it { should have_selector('h1', text:'Twitter Clone') }
+						it { should have_selector('title', text:'Home') }
 					end
 					describe "Correct user should be able to update the profile" do
 						before { put user_path(wrong_user) }

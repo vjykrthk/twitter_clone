@@ -124,4 +124,32 @@ describe User do
 		before { @user.password = @user.password_confirmation = "a" * 5 }
 		it { should_not be_valid }
 	end
+	describe "Micropost association" do
+		before { @user.save }
+		let!(:m1) { FactoryGirl.create(:micropost, user:@user, created_at:1.day.ago) }
+		let!(:m2) { FactoryGirl.create(:micropost, user:@user, created_at:1.hour.ago) }
+
+		describe "It should return micropost in right order" do
+			it { @user.microposts.should == [m2, m1] }
+		end 
+
+		it "When user is delete it should destroy all associated microposts" do
+			microposts = @user.microposts
+			@user.destroy
+			microposts.each do |micropost|
+				Micropost.find_by_id(micropost.id).should be_nil
+			end
+		end
+
+		describe "Status" do
+			let(:unfollowed_user) { FactoryGirl.create(:user, email:"donot@gmail.com") }
+			let!(:unfollowed_post) do
+				FactoryGirl.create(:micropost,user:unfollowed_user)
+			end
+			its(:feed) { should include(m1)}
+			its(:feed) { should include(m2)}
+			its(:feed) { should_not include(unfollowed_post)}
+		end
+	end
+	
 end

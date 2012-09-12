@@ -1,3 +1,26 @@
-<% provide(:title, '') %>
-<h1>Twitter Clone</h1>
-<%= link_to "Sign up now!", signup_path, class: "btn btn-large btn-primary" %>
+<% provide(:title, 'Home') %>
+<% if signed_in? %>
+	<div class="row">
+	    <aside class="span4">
+	      <section>
+	        <%= render 'shared/profile' %>
+	      </section>
+	      <section>
+	        <%= render 'shared/form' %>
+	      </section>
+	    </aside>
+	    <% if @feeds.any? %> 
+			<div class="span8">
+				<h3>Microposts(<%= @feeds.count %>)</h3>
+				<ol class="microposts">
+					<%= render partial:"shared/feed", collection:@feeds %>
+				</ol>
+				<%= will_paginate @feeds %>			
+			</div>
+
+		<% end %>
+  </div> 
+<% else %>	
+	<h1>Twitter Clone</h1>
+	<%= link_to "Sign up now!", signup_path, class: "btn btn-large btn-primary" %>
+<% end %>

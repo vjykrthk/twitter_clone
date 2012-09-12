@@ -2,6 +2,7 @@ TwitterClone::Application.routes.draw do
   
   resources :sessions
   resources :users
+  resources :microposts, only: [:create, :destroy]
 
   root :to => 'StaticPages#home'
  
@@ -9,6 +10,7 @@ TwitterClone::Application.routes.draw do
   match "/signin",  to:"sessions#new"
   match "/signout", to:"sessions#destroy"
 
+  match "/home", to:"static_pages#home"
   match "/about", to:"static_pages#about"
   match "/help", to:"static_pages#help"
   match "/contact", to:"static_pages#contact"

@@ -1,0 +1,10 @@
+<li id="<%= feed.id %>">
+	<%= link_to gravatar_for(current_user, :size => 52), current_user %>
+<span class="user"><%= link_to current_user.name, current_user %></span>
+<span class="content"><%= feed.content %></span>
+Posted <span class="timestamp"><%= time_ago_in_words(feed.created_at) %></span> ago.
+	<% if current_user?(feed.user) %>
+		<%= link_to "delete", feed, method: :delete, data: { confirm:"You are sure?"},
+		 title:feed.content %>
+	<% end %>
+</li>

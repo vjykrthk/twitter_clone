@@ -34,4 +34,11 @@ module SessionsHelper
 		redirect_to session[:redirect_to_url] || default
 		session.delete(:redirect_to_url)
 	end
+
+	def check_whether_the_user_is_signed_in
+		unless  signed_in?
+			store_url_location
+			redirect_to signin_path, notice:"Please signin"
+		end		
+	end
 end
