@@ -16,6 +16,7 @@ describe "User Pages" do
 		let(:user) { FactoryGirl.create(:user) }
 		let!(:m1) { FactoryGirl.create(:micropost, user:user)}
 		let!(:m2) { FactoryGirl.create(:micropost, user:user)}
+		
 		before do
 			signin_user(user) 
 			visit user_path(user) 
@@ -25,6 +26,59 @@ describe "User Pages" do
 		it { should have_content(m1.content) }
 		it { should have_content(m2.content) }
 		it { should have_content(user.microposts.count)}
+
+		describe "following and follower user buttons" do
+			let(:other_user) { FactoryGirl.create(:user) }
+			describe "following action" do
+				before { visit user_path(other_user) }
+
+					it "increment the following count" do
+						expect do
+							click_button 'follow'
+						end.to change(user.followed_users, :count).by(1)						
+					end
+				
+				
+					it "increment the following count" do
+						expect do
+							click_button 'follow'
+						end.to change(other_user.followers, :count).by(1)
+					end
+				
+
+				describe "Should render the unfollow form" do
+					before { click_button 'follow'}
+					it { should have_selector('input', value:"unfollow")}
+				end
+			end
+
+			describe "unfollowing action" do
+				before do 
+					user.follow!(other_user)
+					visit user_path(other_user) 
+				end
+				
+				
+				it "decrement the following count" do
+					expect do
+						click_button 'unfollow'
+					end.to change(user.followed_users, :count).by(-1)
+				end
+				
+				
+				it "decrement the following count" do
+					expect do
+						click_button 'unfollow'
+					end.to change(other_user.followers, :count).by(-1)
+				end
+
+				describe "Should render the follow form" do
+					before { click_button 'unfollow'}
+					it { should have_selector('input', value:"follow")}
+				end
+			end
+		end
+
 	end
 
 	describe "Edit" do
@@ -133,4 +187,26 @@ describe "User Pages" do
 		end
 	end
 
+	describe "followers/following" do
+		let(:user) { FactoryGirl.create(:user) }
+		let(:followed_user) { FactoryGirl.create(:user) }
+		let(:follower) { FactoryGirl.create(:user) }
+		before do 
+			signin_user(user)
+			user.follow!(followed_user)
+			follower.follow!(user)
+		end
+		describe "following" do
+			before { visit following_user_path(user)}
+			it { should have_selector('title', text:full_title("following"))}
+			it { should have_selector('h3', text:"following") }
+			it { should have_link(followed_user.name, href:user_path(followed_user))}
+		end
+		describe "followers" do
+			before { visit followers_user_path(user)}
+			it { should have_selector('title', text:full_title("followers"))}
+			it { should have_selector('h3', text:"followers") }
+			it { should have_link(follower.name, href:user_path(follower))}
+		end
+	end
 end

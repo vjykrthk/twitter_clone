@@ -1,6 +1,7 @@
+<% user = User.find(feed.user_id) %>
 <li id="<%= feed.id %>">
-	<%= link_to gravatar_for(current_user, :size => 52), current_user %>
-<span class="user"><%= link_to current_user.name, current_user %></span>
+	<%= link_to gravatar_for(user, :size => 52), user %>
+<span class="user"><%= link_to user.name, user %></span>
 <span class="content"><%= feed.content %></span>
 Posted <span class="timestamp"><%= time_ago_in_words(feed.created_at) %></span> ago.
 	<% if current_user?(feed.user) %>

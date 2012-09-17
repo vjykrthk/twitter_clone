@@ -1,6 +1,6 @@
 class MicropostsController < ApplicationController
 	before_filter :check_whether_the_user_is_signed_in
-	before_filter :correct_userm, only: :destroy
+	before_filter :correct_user, only: :destroy
 
 	def create
 		@micropost = current_user.microposts.build(params[:micropost])

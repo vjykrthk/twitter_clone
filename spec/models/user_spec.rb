@@ -16,6 +16,11 @@ describe User do
  		it { should respond_to(:password_confirmation) }
  		it { should respond_to(:authenticate) }
  		it { should respond_to(:admin) }
+ 		it { should respond_to(:relationships)}
+ 		it { should respond_to(:followed_users) }
+ 		it { should respond_to(:followers) }
+ 		it { should respond_to(:follow!) }
+ 		it { should respond_to(:following?) }
  	end
 
  	describe "With admin attributes set to true" do
@@ -146,10 +151,47 @@ describe User do
 			let!(:unfollowed_post) do
 				FactoryGirl.create(:micropost,user:unfollowed_user)
 			end
+			let(:followed_user) { FactoryGirl.create(:user) }
+			before do
+				@user.follow!(followed_user)
+				3.times do
+					FactoryGirl.create(:micropost,user:followed_user)
+				end
+			end
+
 			its(:feed) { should include(m1)}
 			its(:feed) { should include(m2)}
-			its(:feed) { should_not include(unfollowed_post)}
+			its(:feed) { should_not include(unfollowed_post)}				
+			its(:feed) do
+				followed_user.microposts.each do |micropost| 
+					should include(micropost)
+				end
+			end
+			
 		end
 	end
+
+	describe "following" do
+		let(:other_user) { FactoryGirl.create(:user) }
+		before do
+			@user.save
+			@user.follow!(other_user)
+		end
+
+		it { should be_following(other_user) }
+		its(:followed_users) { should include(other_user) }
+
+		describe "unfollow" do
+			before { @user.unfollow(other_user) }
+			its(:followed_users) { should_not include(other_user) }
+		end
+
+		describe "following" do
+			subject { other_user }
+			its(:followers) { should include(@user) }
+		end
+	end
+
+
 	
 end

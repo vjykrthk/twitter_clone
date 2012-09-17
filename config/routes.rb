@@ -1,8 +1,13 @@
 TwitterClone::Application.routes.draw do
   
   resources :sessions
-  resources :users
+  resources :users do
+    member do
+      get :following, :followers
+    end    
+  end
   resources :microposts, only: [:create, :destroy]
+  resources :relationships, only: [:create, :destroy]
 
   root :to => 'StaticPages#home'
  

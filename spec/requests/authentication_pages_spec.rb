@@ -66,6 +66,25 @@ describe "AuthenticationPages" do
 							it { response.should redirect_to(signin_path)}
 						end
 					end
+					describe "following page" do
+						before { visit following_user_path(user)}
+						it { should have_selector('h1', text:'Sign in')}
+					end
+					describe "followers page" do
+						before { visit followers_user_path(user) }
+						it { should have_selector('h1', text:'Sign in')}
+					end
+				
+					describe "Relationship" do
+						it "post action" do
+							post relationships_path
+							response.should redirect_to(signin_path)
+						end
+						it "post action" do
+							delete relationship_path(1)
+							response.should redirect_to(signin_path)
+						end
+					end
 				end
 				describe "Signed user" do
 					let(:user) { FactoryGirl.create(:user) }
