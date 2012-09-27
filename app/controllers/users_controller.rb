@@ -75,6 +75,7 @@ class UsersController < ApplicationController
 			@user.confirmation_code_send_at = nil
 			@user.save!(:validate => false)
 			signin_in @user
+			flash[:success] = "Your registration is complete"
 			redirect_to @user
 		else
 			redirect_to root_path
