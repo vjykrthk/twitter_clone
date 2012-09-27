@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-	before_filter :check_whether_the_user_is_signed_in, only: [ :index,:show, :edit, :update, :destroy, :following, :followers]
+	before_filter :check_whether_the_user_is_signed_in, only: [ :index, :show, :edit, :update, :destroy, :following, :followers]
 	before_filter :check_whether_correct_user, only: [:edit, :update]
 	before_filter :check_whether_admin, only:[:destroy]
 
@@ -22,8 +22,10 @@ class UsersController < ApplicationController
 		
 		if @user.save
 			signin_in @user
+			@user.send_email_confirmation
 			flash[:success] = "You have successfully registered"
-			redirect_to @user
+			flash[:notice] = "An email as send with instruction to complete registration"
+			redirect_to root_path
 		else
 			render 'new'
 		end
@@ -36,6 +38,7 @@ class UsersController < ApplicationController
 	def update
 		@user = User.find(params[:id])
 		if @user.update_attributes(params[:user])
+			signin_in @user
 			flash[:success] = "You profile has been successfully updated"
 			redirect_to @user
 		else
@@ -64,11 +67,22 @@ class UsersController < ApplicationController
 		render 'show_follow'
 	end
 
-
+	def confirm
+		@user = User.find_by_confirmation_code(params[:confirm_id])
+		if @user && @user.confirmation_code_send_at > 2.hours.ago
+			@user.toggle!(:email_confirmed)
+			@user.confirmation_code = nil
+			@user.confirmation_code_send_at = nil
+			@user.save!(:validate => false)
+			signin_in @user
+			redirect_to @user
+		else
+			redirect_to root_path
+		end
+	end
 
 	def check_whether_correct_user
-
-		@user = User.find(params[:id])
+		@user = User.find_by_id(params[:id])
 		redirect_to root_path unless @user == current_user
 	end
 

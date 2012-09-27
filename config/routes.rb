@@ -11,6 +11,7 @@ TwitterClone::Application.routes.draw do
 
   root :to => 'StaticPages#home'
  
+  match "/users/:id/confirm/:confirm_id", to:"users#confirm", as: :confirm
   match "/signup",  to:"users#new"
   match "/signin",  to:"sessions#new"
   match "/signout", to:"sessions#destroy"

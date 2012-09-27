@@ -180,10 +180,15 @@ describe "User Pages" do
 			fill_in "Password", with:"foobar"
 			fill_in "Confirmation", with:"foobar"
 		end
-		it { expect { click_button "Create new user" }.to change(User,:count).by(1) }
+		it { expect { click_button "Create new user" }.to change(User,:count).by(1) }		
 		describe "After submission" do
-			before { click_button "Create new user" }
+			before do 
+				ActionMailer::Base.deliveries = []
+				click_button "Create new user" 
+			end
 			it { should have_selector('div.alert.alert-success', text:'success')}
+			it { should have_selector('div.alert.alert-notice', text:'email')}
+			it { ActionMailer::Base.deliveries.last.to.should include("example.com@example.com")}
 		end
 	end
 

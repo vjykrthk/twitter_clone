@@ -12,6 +12,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'rspec-rails', '2.11.0'
   gem 'guard-rspec', '0.5.5'
+  gem 'debugger'
 end
 
 # Gems used only for assets and not required
@@ -37,3 +38,7 @@ end
 group :production do
   gem 'pg', '0.12.2'
 end
+
+gem 'quiet_assets', group: :development
+
+gem 'thin'

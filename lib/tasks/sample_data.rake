@@ -9,11 +9,13 @@ namespace :db do
 	def user_sample_data
 		user = User.create!(name:"Vijay Karthik", email:"example@railstutorial.com", password:"foobar", password_confirmation:"foobar")
 		user.toggle!(:admin)
+		user.toggle!(:email_confirmed)
 		99.times do |n|
 			name = Faker::Name.name
 			email = "example-#{n+1}@railstutorial.org"
 			password = "foobar"
-			User.create!(name:name, email:email, password:password, password_confirmation:password)
+			u = User.create!(name:name, email:email, password:password, password_confirmation:password)
+			u.toggle!(:email_confirmed)
 		end
 	end
 

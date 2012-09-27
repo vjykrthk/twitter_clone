@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
 	validates :password_confirmation, presence:true
 
 
+	
 	def feed
 		Micropost.from_users_followed_by(self)
 	end
@@ -36,6 +37,20 @@ class User < ActiveRecord::Base
 
 	def following?(user)
 		relationships.find_by_followed_id(user.id)
+	end
+
+	def send_email_confirmation
+		generate_token(:confirmation_code)
+		self.confirmation_code_send_at = Time.zone.now
+		self.email_confirmed = false
+		save!(:validate => false)
+		UserMailer.email_confirmation(self).deliver
+	end
+
+	def generate_token(column)
+		begin
+			self[column] = SecureRandom.urlsafe_base64
+		end while User.exists?(column => self[column])
 	end
 	
 	private

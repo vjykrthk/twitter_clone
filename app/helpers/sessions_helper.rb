@@ -19,7 +19,7 @@ module SessionsHelper
 	end
 
 	def current_user
-		@current_user ||= User.find_by_rememberme_token(cookies[:Rememberme_token])
+		@current_user ||= User.find_by_rememberme_token(cookies[:Rememberme_token])		
 	end
 
 	def current_user?(user)
