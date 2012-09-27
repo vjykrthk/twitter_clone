@@ -5,9 +5,9 @@ describe User do
 	before { @user = User.new(	name:"moyo", 
 								email:"moyo@example.com", 
 								password:"hohoho", 
-								password_confirmation:"hohoho") }
+								password_confirmation:"hohoho" ) }
  	
- 	describe "user should respond to the following methods" do 		
+ 	describe "user should respond to the following methods" do	
  		it { should respond_to(:name) }
  		it { should respond_to(:email) }
  		it { should respond_to(:password_digest )}
@@ -21,6 +21,18 @@ describe User do
  		it { should respond_to(:followers) }
  		it { should respond_to(:follow!) }
  		it { should respond_to(:following?) }
+ 		it { should respond_to(:confirmation_code)}
+ 		it { should respond_to(:confirmation_code_send_at)}
+ 		it { should respond_to(:email_confirmed)}
+ 	end
+
+ 	describe "with email_confirmed set to true" do
+ 		before do
+ 			@user.save
+ 			@user.toggle!(:email_confirmed)
+ 		end
+
+ 		it { should be_email_confirmed}
  	end
 
  	describe "With admin attributes set to true" do
@@ -190,8 +202,14 @@ describe User do
 			subject { other_user }
 			its(:followers) { should include(@user) }
 		end
-	end
+	end	
 
-
-	
+ 	describe "#send_email_confirmation" do
+ 		before do
+ 			@user.send_email_confirmation 
+ 			@user.reload
+ 		end
+ 		its(:confirmation_code) { should be_present }
+ 		its(:confirmation_code_send_at) { should be_present }
+ 	end
 end

@@ -6,6 +6,7 @@ describe UsersController do
 	let(:m2) { FactoryGirl.create(:micropost, user:user)}
 
 	describe "RSS FEED" do
+		before { signin_user(user) }
 		it "Should return feed in atom format" do
 			get :show, id: user, format:"atom"
 			response.should be_success
@@ -13,4 +14,5 @@ describe UsersController do
 			response.content_type.should eq("application/atom+xml")
 		end
 	end
+
 end
